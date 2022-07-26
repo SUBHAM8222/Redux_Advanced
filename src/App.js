@@ -7,18 +7,64 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 //import axios from 'axios';
 import Notification from './components/UI/Notification';
-import { cartsliceactions } from './components/Store/Index';
-let isInitial = true;
+import { cartsliceactions,cartsslicesactions } from './components/Store/Index.js';
 
+let isInitial = true;
+ 
 function App() {
 
   const dispatch=useDispatch();
+  const dispatch2=useDispatch();
   const shown=useSelector(state=>state.cartclick.cartshown);
   const cart=useSelector(state=>state.cart);
   const notification = useSelector((state) => state.cartclick.notification)
-  //const shownotfn=useSelector(state=>state.cartclick.Notification);
-  //console.log(shownotfn)
-  // console.log(shown)
+//  
+useEffect(()=>{
+  const Receivedata = async () => {
+    
+//     dispatch(
+//       cartsliceactions.showNotification({
+//         status: 'pending',
+//         title: 'Sending...',
+//         message: 'receiving cart data!',
+//       })
+//     );
+   const response = await fetch(
+    'https://redux-api-eb2dd-default-rtdb.firebaseio.com/expense.json');
+     const data=await response.json();
+    console.log(data);
+//     if (!response.ok) {
+//       throw new Error('receiving cart data failed.');
+//     }
+
+//     dispatch(
+//       cartsliceactions.showNotification({
+//         status: 'success',
+//         title: 'Success!',
+//         message: 'receive cart data successfully!',
+//       })
+     
+//     );
+ dispatch2(cartsslicesactions.replaceCart(data))
+//   };
+
+
+
+//   Receivedata().catch((error) => {
+//     dispatch(
+//       cartsliceactions.showNotification({
+//         status: 'error',
+//         title: 'Error!',
+//         message: 'receiving cart data failed!',
+//       })
+//     );
+//   });
+
+ }
+ Receivedata();
+}
+ ,[dispatch2])
+
   useEffect(() => {
     const sendCartData = async () => {
       dispatch(
@@ -32,10 +78,11 @@ function App() {
         'https://redux-api-eb2dd-default-rtdb.firebaseio.com/expense.json',
         {
           method: 'PUT',
-          body: JSON.stringify(cart),
+          body: JSON.stringify({items:cart.items,totalQuantity:cart.totalQuantity}),
         }
       );
-
+      const data=await response.json();
+      console.log(data);
       if (!response.ok) {
         throw new Error('Sending cart data failed.');
       }
