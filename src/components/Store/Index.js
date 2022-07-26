@@ -44,13 +44,20 @@ const cartsslice = createSlice({
 const cartslice=createSlice({
 
     name:'cartclick',
-    initialState:{cartshown:false},
+    initialState:{cartshown:false,notification:null},
     reducers:{
 
         cartshow(state) {
             state.cartshown=!state.cartshown;
 
+        },
+        showNotification(state, action) {
+          state.notification = {
+            status: action.payload.status,
+            title: action.payload.title,
+            message: action.payload.message,
         }
+      }
     },
 })
 
